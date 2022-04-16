@@ -140,11 +140,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
-                    _buildSwitch()
-                    // CupertinoSwitch(value: _notificaton, onChanged: (bool newValue) {
-                    //   print('................................................$newValue');
-                    //   setState(() => _notificaton = newValue);
-                    // })
+                    _buildSwitch(),
                   ],
                 ),
                 Row(

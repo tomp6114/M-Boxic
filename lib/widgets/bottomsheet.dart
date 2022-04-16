@@ -54,7 +54,7 @@ class _buildSheetState extends State<buildSheet> {
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                         image: DecorationImage(
-                          image: AssetImage("assets/images/default.jpeg"),
+                          image: AssetImage("assets/images/logo1.png"),
                           fit: BoxFit.cover,
                         ),
                       ),

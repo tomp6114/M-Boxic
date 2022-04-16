@@ -62,7 +62,7 @@ class _FavouritesState extends State<Favourites> {
                       valueListenable: box.listenable(),
                       builder: (context, boxes, _) {
                         final likedSongs = box.get("favorites");
-                        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$likedSongs');
+                        //print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$likedSongs');
                         return ListView.builder(
                             itemCount: likedSongs!.length,
                             itemBuilder: (context, index) => GestureDetector(
