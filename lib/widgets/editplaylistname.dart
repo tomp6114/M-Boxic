@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../db/box.dart';
 
-
+// ignore: must_be_immutable
 class EditPlaylist extends StatelessWidget {
   EditPlaylist({Key? key, required this.playlistName}) : super(key: key);
   final String playlistName;
@@ -20,8 +20,8 @@ class EditPlaylist extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(
+          const Padding(
+            padding: EdgeInsets.only(
               right: 20,
               left: 20,
               top: 20,
@@ -83,7 +83,7 @@ class EditPlaylist extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         "Cancel",
                         style: TextStyle(
@@ -111,7 +111,7 @@ class EditPlaylist extends StatelessWidget {
                         Navigator.pop(context);
                       }
                     },
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         "Save",
                         style: TextStyle(

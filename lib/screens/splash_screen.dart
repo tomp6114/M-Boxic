@@ -2,7 +2,6 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player_go/screens/bottom_navigation.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import '../db/box.dart';
 import '../db/songmodel.dart';
 
@@ -63,55 +62,50 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              // gradient: LinearGradient(
-              //   colors: [
-              //     Color.fromARGB(255, 42, 6, 241),
-              //     Color.fromARGB(255, 70, 134, 177),
-              //     Color.fromARGB(255, 16, 239, 247),
-                  
-              //   ],
-              //   begin: Alignment.topCenter,
-              //   end: Alignment.bottomCenter,
-              // ),
+          decoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(37.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(37.0),
+                    child: Image.asset(
+                      'assets/images/logo2.png',
+                      height: 143,
+                      width: 139,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Text(
+                    'M  B o x i c',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30.0),
+                  ),
+                ],
+              ),
             ),
-            child: Center(
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(37.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(37.0),
-                        child: Image.asset(
-                          'assets/images/logo2.png',
-                          //color: Colors.transparent,
-                          height: 143,
-                          width: 139,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(height: 10,),
-                      const Text(
-                        'M  B o x i c',
-                        style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 30.0),
-                      ),
-                    ],
-                  )),
-            )),
+          ),
+        ),
       ),
     );
   }
 
   Future<void> toHomeScreen() async {
     await Future.delayed(
-      Duration(seconds: 4),
+      const Duration(seconds: 4),
       () {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) {
-              //print('hello audios.............$audiosongs');
               return BottomNavigation(allsong: audiosongs);
             },
           ),

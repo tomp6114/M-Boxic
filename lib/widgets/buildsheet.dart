@@ -7,8 +7,8 @@ import '../db/songmodel.dart';
 
 // ignore: must_be_immutable
 class BuildSheet extends StatefulWidget {
-  BuildSheet({Key? key,  this.song}) : super(key: key);
-  Audio ?song;
+  BuildSheet({Key? key, this.song}) : super(key: key);
+  Audio? song;
 
   @override
   State<BuildSheet> createState() => _BuildSheetState();
@@ -26,7 +26,6 @@ class _BuildSheetState extends State<BuildSheet> {
     final box = Boxes.getInstance();
     playlists = box.keys.toList();
     return Container(
-      //color: Color.fromARGB(97, 0, 0, 0),
       padding: const EdgeInsets.only(top: 30, bottom: 20),
       child: ListView(
         physics: const BouncingScrollPhysics(),
@@ -35,14 +34,15 @@ class _BuildSheetState extends State<BuildSheet> {
             padding: const EdgeInsets.only(left: 5, right: 5, bottom: 10),
             child: ListTile(
               onTap: () => showDialog(
-                
                 context: context,
                 builder: (context) => AlertDialog(
-                  backgroundColor: Color.fromARGB(136, 8, 8, 8),
+                  backgroundColor: const Color.fromARGB(136, 8, 8, 8),
                   title: const Text(
                     "Add new Playlist",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20,color: Color.fromARGB(255, 102, 197, 105)),
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Color.fromARGB(255, 102, 197, 105)),
                   ),
                   content: TextField(
                     onChanged: (value) {
@@ -62,22 +62,19 @@ class _BuildSheetState extends State<BuildSheet> {
                                 .where((element) => element == playlistName)
                                 .toList();
                           }
-    
+
                           if (playlistName != '' && excistingName.isEmpty) {
                             box.put(playlistName, librayry);
                             Navigator.of(context).pop();
                             setState(() {
-                            playlists = box.keys.toList();
+                              playlists = box.keys.toList();
                             });
                           } else {
-                           
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(SnackBars().excistingPlaylist);
                           }
-    
-                          // controller.clear();
                         },
-                        child: Text(
+                        child: const Text(
                           "ADD",
                           style: TextStyle(
                             color: Color.fromARGB(255, 240, 237, 237),
@@ -121,16 +118,16 @@ class _BuildSheetState extends State<BuildSheet> {
                                 element.id.toString() ==
                                 widget.song!.metas.id.toString())
                             .toList();
-    
+
                         if (existingSongs.isEmpty) {
                           final songs = box.get("musics") as List<Songsdb>;
                           final temp = songs.firstWhere((element) =>
                               element.id.toString() ==
                               widget.song!.metas.id.toString());
                           playlistSongs?.add(temp);
-    
+
                           await box.put(e, playlistSongs!);
-    
+
                           // setState(() {});
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context)

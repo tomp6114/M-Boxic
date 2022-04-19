@@ -25,7 +25,7 @@ Future main() async {
   }
 
   
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -34,8 +34,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(backgroundColor: Color.fromARGB(255, 253, 251, 251)),
-      home: SplashScreen(),
+      theme: ThemeData(backgroundColor: const Color.fromARGB(255, 253, 251, 251)),
+      home: const SplashScreen(),
       darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
     );

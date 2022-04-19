@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:music_player_go/screens/favourities.dart';
 import 'package:music_player_go/screens/playlist_screen.dart';
-import 'package:music_player_go/widgets/buildsheet.dart';
-
 import '../db/box.dart';
 import '../db/songmodel.dart';
 import '../widgets/editplaylistname.dart';
@@ -25,8 +22,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      // extendBodyBehindAppBar: true,
-      // extendBody: true,
       body: SafeArea(
         child: Container(
           height: 850,
@@ -73,7 +68,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                              backgroundColor: Color.fromARGB(146, 0, 0, 0),
+                              backgroundColor:
+                                  const Color.fromARGB(146, 0, 0, 0),
                               title: const Text(
                                 "Add new Playlist",
                                 textAlign: TextAlign.center,
@@ -111,11 +107,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                           .showSnackBar(
                                               SnackBars().excistingPlaylist);
                                     }
-                                    // controller.clear();
                                   },
                                   child: const Text(
                                     "ADD",
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Color.fromARGB(255, 233, 225, 225),
                                     ),
                                   ),
@@ -123,19 +118,17 @@ class _LibraryScreenState extends State<LibraryScreen> {
                               ],
                             ),
                           );
-                          // Navigator.of(context).push(MaterialPageRoute(builder: (ctx){
-                          //   return BuildSheet();
-                          // }));
                         },
                         icon: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.green),
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 30.0,
-                            )),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.green),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 30.0,
+                          ),
+                        ),
                         label: const Text(
                           'Playlist',
                           style: TextStyle(color: Colors.white),
@@ -189,25 +182,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
                         ],
                       ),
                     ),
-                    // SizedBox(
-                    //   height: MediaQuery.of(context).size.height * 0.05,
-                    // ),
-                    // SizedBox(
-                    //   height: MediaQuery.of(context).size.height * 0.01,
-                    // ),
-                    // TextButton.icon(
-                    //   onPressed: () {},
-                    //   icon: Container(
-                    //       decoration: BoxDecoration(
-                    //           borderRadius: BorderRadius.circular(5),
-                    //           color: const Color.fromARGB(255, 10, 185, 216)),
-                    //       child: const Icon(Icons.queue_music,
-                    //           color: Colors.white, size: 30.0)),
-                    //   label: const Text(
-                    //     'Recently Played',
-                    //     style: TextStyle(color: Colors.white),
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -216,10 +190,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   valueListenable: box.listenable(),
                   builder: (context, boxes, _) {
                     playlists = box.keys.toList();
-                    // if (playlistName == 'favorites') {
-
-                    //   favourite = Container();
-                    // } else {}
                     return Padding(
                       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                       child: ListView.builder(
@@ -291,7 +261,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
               builder: (context) => AlertDialog(
                     backgroundColor: const Color.fromARGB(110, 0, 0, 0),
                     title: Text(
-                      '${playlistName.toString()}',
+                      playlistName.toString(),
                       textAlign: TextAlign.center,
                       style: const TextStyle(fontSize: 16),
                     ),

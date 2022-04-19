@@ -4,9 +4,9 @@ import 'package:music_player_go/cls/cls.dart';
 import 'package:music_player_go/db/box.dart';
 import 'package:music_player_go/widgets/now_playing.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import '../db/songmodel.dart';
 
+// ignore: must_be_immutable
 class SearchScreen extends StatefulWidget {
   List<Audio> fullSongs = [];
 
@@ -44,7 +44,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     searchSongs();
   }
@@ -64,7 +63,6 @@ class _SearchScreenState extends State<SearchScreen> {
     List<Audio> searchResult = searchTitle + searchArtist;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // extendBody: true,
       extendBody: true,
       body: SafeArea(
         child: Container(
@@ -110,18 +108,17 @@ class _SearchScreenState extends State<SearchScreen> {
                 Container(
                   height: 50,
                   width: MediaQuery.of(context).size.width * 0.85,
-                  /*MediaQuery.of(context).size.height * 0.07,*/
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10.0)),
                   child: TextField(
                     cursorColor: Colors.grey,
                     enableSuggestions: true,
-                    style: TextStyle(color: Colors.black, fontSize: 20),
+                    style: const TextStyle(color: Colors.black, fontSize: 20),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: Colors.grey),
+                        borderSide: const BorderSide(color: Colors.grey),
                       ),
                       hintText: ' Search a song',
                       filled: true,
@@ -135,7 +132,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     },
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30.0,
                 ),
                 search.isNotEmpty
@@ -205,7 +202,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                     .metas
                                                     .title!,
                                                 maxLines: 1,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white),
@@ -215,7 +212,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                     .metas
                                                     .artist!,
                                                 maxLines: 1,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.white),
                                               ),
@@ -230,7 +227,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               ],
                             ),
                           )
-                        : Padding(
+                        : const Padding(
                             padding: EdgeInsets.all(30),
                             child: Text(
                               "No Result Found",

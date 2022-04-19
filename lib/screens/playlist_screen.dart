@@ -1,17 +1,14 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'package:music_player_go/db/songmodel.dart';
-
 import 'package:music_player_go/widgets/bottomsheet.dart';
-
 import 'package:music_player_go/widgets/now_playing.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import '../db/box.dart';
 import '../openassetaudio/openassetaudio.dart';
 
+// ignore: must_be_immutable
 class PlaylistScreen extends StatefulWidget {
   String? playlistName;
 
@@ -28,17 +25,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   List<Audio> playPlaylist = [];
 
   final box = Boxes.getInstance();
- 
+
   @override
   void initState() {
     super.initState();
-    // getSongs();
   }
-
-  // getSongs() {
-  //   dbSongs = box.get("musics") as List<Songs>;
-  //   playlistSongs = box.get(widget.playlistName);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -62,18 +53,19 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
           IconButton(
             onPressed: () {
               showModalBottomSheet(
-                backgroundColor: Color.fromARGB(97, 0, 0, 0),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(40),
-                    ),
+                backgroundColor: const Color.fromARGB(97, 0, 0, 0),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(40),
                   ),
-                  context: context,
-                  builder: (context) {
-                    return buildSheet(
-                      playlistName: widget.playlistName!,
-                    );
-                  });
+                ),
+                context: context,
+                builder: (context) {
+                  return buildSheet(
+                    playlistName: widget.playlistName!,
+                  );
+                },
+              );
             },
             icon: const Icon(Icons.add),
           ),
@@ -96,32 +88,35 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                 valueListenable: box.listenable(),
                 builder: (context, boxes, _) {
                   final playlistSongs = box.get(widget.playlistName)!;
-
-                  // print(widget.playlistName);
                   return playlistSongs.isEmpty
                       ? const SizedBox(
                           child: Center(
                             child: Text(
                               "No songs here!",
-                              style: TextStyle(color: Colors.white, fontSize: 20),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
                             ),
                           ),
                         )
                       : ListView.builder(
                           itemCount: playlistSongs.length,
                           itemBuilder: (context, index) {
-                            
                             return GestureDetector(
                               onTap: () {
-                                playlistSongs.forEach((element) {
-                                  playPlaylist.add(Audio.file(
-                                      element.image.toString(),
-                                      metas: Metas(
-                                          title: element.title,
-                                          id: element.id.toString(),
-                                          artist: element.artist)));
-                                });
-                                //addToList(playlistSongs,index);
+                                playlistSongs.forEach(
+                                  (element) {
+                                    playPlaylist.add(
+                                      Audio.file(
+                                        element.image.toString(),
+                                        metas: Metas(
+                                            title: element.title,
+                                            id: element.id.toString(),
+                                            artist: element.artist),
+                                      ),
+                                    );
+                                  },
+                                );
+
                                 OpenAssetAudio(
                                         allsong: playPlaylist, index: index)
                                     .openAsset(
@@ -136,7 +131,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                   ),
                                 );
                               },
-                              //onLongPress: () async {},
                               child: ListTile(
                                 leading: SizedBox(
                                   height: 50,
@@ -150,8 +144,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                       height: 50,
                                       width: 50,
                                       decoration: const BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.all(Radius.circular(15)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15)),
                                         image: DecorationImage(
                                           image: AssetImage(
                                               "assets/images/logo.png"),
@@ -178,15 +172,18 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                       color: Colors.white),
                                 ),
                                 trailing: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            playlistSongs.removeAt(index);
-                                            box.put(widget.playlistName, playlistSongs);
-                                          });
-                                        },
-                                        icon:
-                                            Icon(Icons.delete, color: Colors.white),
-                                      ),
+                                  onPressed: () {
+                                    setState(
+                                      () {
+                                        playlistSongs.removeAt(index);
+                                        box.put(
+                                            widget.playlistName, playlistSongs);
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.white),
+                                ),
                               ),
                             );
                           },
@@ -199,20 +196,4 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
       ),
     );
   }
-
-  // Future addToList(List playlistSongs,index) async{
-  //   for (dynamic  element in playlistSongs) {
-  //     playPlaylist.add(
-  //       Audio.file(
-  //         element.uri!,
-  //         metas: Metas(
-  //           title: element.title,
-  //           id: element.id.toString(),
-  //           artist: element.artist,
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //   print('.............................................................$playPlaylist');
-  // }
 }
