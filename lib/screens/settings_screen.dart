@@ -1,25 +1,26 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../controller/settings_controller.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+class SettingsScreen extends StatelessWidget {
+   SettingsScreen({Key? key}) : super(key: key);
 
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
+  final Uri _url = Uri.parse('https://www.privacypolicies.com/live/69128004-fa3a-4711-833f-c73cdf880e5b');
+  final Uri _privacyPolicy = Uri.parse('https://www.privacypolicies.com/live/9cb3fca6-2e8f-4119-bc86-e23b6bb2375b');
 
-bool _notificaton = false;
-
-class _SettingsScreenState extends State<SettingsScreen> {
+  
   @override
   Widget build(BuildContext context) {
+    Get.put(SettingsController());
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Get.back();
           },
           icon: const Icon(Icons.arrow_back),
         ),
@@ -55,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   alignment: Alignment.topLeft,
                   child: TextButton.icon(
                     onPressed: () {
-                      _shareApp();
+                      _shareApp(context);
                     },
                     icon: const Icon(
                       Icons.share,
@@ -71,7 +72,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: TextButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      _launchPrivacyPolicy();
+                    },
                     icon: const Icon(
                       Icons.privacy_tip,
                       color: Colors.white,
@@ -86,7 +89,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: TextButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      _launchTermsAndConditions();
+                    },
                     icon: const Icon(
                       Icons.announcement,
                       color: Colors.white,
@@ -102,7 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   alignment: Alignment.topLeft,
                   child: TextButton.icon(
                     onPressed: () {
-                      _aboutUs();
+                      _aboutUs(context);
                     },
                     icon: const Icon(
                       Icons.info,
@@ -133,7 +138,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
-                    _buildSwitch(),
+                    GetBuilder<SettingsController>(builder: (controller){
+                      return controller.buildSwitch();
+                    })
                   ],
                 ),
                 Row(
@@ -150,41 +157,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildSwitch() {
-    return CupertinoSwitch(
-      value: _notificaton,
-      onChanged: _updateSwitch,
-      activeColor: const Color.fromARGB(255, 86, 209, 14),
-      trackColor: const Color.fromARGB(255, 113, 116, 113),
-    );
-  }
+  
 
-  void _updateSwitch(bool newValue) {
-    setState(() {
-      _notificaton = newValue;
-    });
-  }
+  
 
-  void _aboutUs() {
+  void _aboutUs(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
-        return const AlertDialog(
-          backgroundColor: Color.fromARGB(90, 0, 0, 0),
-          title: Center(
-            child: Text('About me'),
+        return  AlertDialog(
+          backgroundColor: const Color.fromARGB(90, 0, 0, 0),
+          title: const Center(
+            child: Text('About'),
           ),
           content: Padding(
-            padding: EdgeInsets.only(bottom: 10, top: 10.0),
+            padding: const EdgeInsets.only(bottom: 10, top: 10.0),
             child: Text(
-                'Hi I am Tom P Varghese a Flutter developer from Brototype.'),
+                'Hi This is my music app M Boxic \n Version 1.0.1',style: GoogleFonts.montserrat(),),
           ),
         );
       },
     );
   }
 
-  void _shareApp() async {
+  void _shareApp(BuildContext context) async {
     final box = context.findRenderObject() as RenderBox?;
     const String uri =
         'https://play.google.com/store/apps/details?id=in.brototype.music_player_go';
@@ -194,4 +190,11 @@ $uri''',
         sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
         subject: "Sharing the #1 music application");
   }
+
+  void _launchTermsAndConditions() async {
+  if (!await launchUrl(_url)) throw 'Could not launch $_url';
+}
+void _launchPrivacyPolicy() async {
+  if (!await launchUrl(_privacyPolicy)) throw 'Could not launch $_privacyPolicy';
+}
 }

@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 import 'package:hive_flutter/adapters.dart';
 import 'package:music_player_go/screens/playlist_screen.dart';
+
 import '../db/box.dart';
 import '../db/songmodel.dart';
 import '../widgets/editplaylistname.dart';
-import '../widgets/snakbars.dart';
 
-class LibraryScreen extends StatefulWidget {
-  const LibraryScreen({Key? key}) : super(key: key);
 
-  @override
-  State<LibraryScreen> createState() => _LibraryScreenState();
-}
+// ignore: must_be_immutable
+class LibraryScreen extends StatelessWidget {
+  LibraryScreen({Key? key}) : super(key: key);
 
-class _LibraryScreenState extends State<LibraryScreen> {
   Widget favourite = Container();
   final box = Boxes.getInstance();
   List playlists = [];
@@ -98,14 +97,14 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                     if (playlistName != '' &&
                                         excistingName.isEmpty) {
                                       box.put(playlistName, librayry);
-                                      Navigator.of(context).pop();
-                                      setState(() {
-                                        playlists = box.keys.toList();
-                                      });
+                                      Get.back();
+                                      playlists = box.keys.toList();
                                     } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                              SnackBars().excistingPlaylist);
+                                      Get.snackbar(
+                                        "Message",
+                                        "Excisting playlist name",
+                                        colorText: Colors.red,
+                                      );
                                     }
                                   },
                                   child: const Text(
@@ -142,12 +141,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       padding: const EdgeInsets.only(left: 8.0),
                       child: TextButton.icon(
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return PlaylistScreen(
-                              playlistName: 'favorites',
-                            );
-                          }));
+                          Get.to(PlaylistScreen(
+                            playlistName: "favorites",
+                          ));
                         },
                         icon: Container(
                             decoration: BoxDecoration(
@@ -186,6 +182,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 ),
               ),
               Expanded(
+                flex: 1,
                 child: ValueListenableBuilder(
                   valueListenable: box.listenable(),
                   builder: (context, boxes, _) {
@@ -210,16 +207,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                       Icons.queue_sharp,
                                       color: Color.fromARGB(255, 20, 192, 14),
                                     ),
-                                    trailing: popupMenuBar(index),
+                                    trailing: popupMenuBar(index, context),
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PlaylistScreen(
-                                            playlistName: playlists[index],
-                                          ),
-                                        ),
-                                      );
+                                      Get.to(PlaylistScreen(
+                                          playlistName: playlists[index]));
                                     },
                                   )
                                 : Container(),
@@ -237,7 +228,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
     );
   }
 
-  popupMenuBar(int index) {
+  popupMenuBar(int index, BuildContext context) {
     return PopupMenuButton(
       color: const Color.fromARGB(255, 27, 21, 21),
       itemBuilder: (context) => [
@@ -272,22 +263,20 @@ class _LibraryScreenState extends State<LibraryScreen> {
                           box.delete(
                             playlists[index],
                           );
-                          Navigator.pop(context);
+                          Get.back();
                         },
                         child: const Text('Yes'),
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          Get.back();
                         },
                         child: const Text('No'),
                       ),
                     ],
                   ));
 
-          setState(() {
-            playlists = box.keys.toList();
-          });
+          playlists = box.keys.toList();
         }
         if (value == "1") {
           showDialog(

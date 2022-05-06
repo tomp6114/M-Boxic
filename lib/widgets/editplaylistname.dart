@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 import '../db/box.dart';
 
 // ignore: must_be_immutable
@@ -108,7 +108,7 @@ class EditPlaylist extends StatelessWidget {
                         List? playlists = _box.get(playlistName);
                         _box.put(_title, playlists!);
                         _box.delete(playlistName);
-                        Navigator.pop(context);
+                        Get.back();
                       }
                     },
                     child: const Center(

@@ -1,20 +1,15 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:music_player_go/widgets/snakbars.dart';
-
+import 'package:get/get.dart';
 import '../db/box.dart';
 import '../db/songmodel.dart';
 
 // ignore: must_be_immutable
-class BuildSheet extends StatefulWidget {
+class BuildSheet extends StatelessWidget {
   BuildSheet({Key? key, this.song}) : super(key: key);
   Audio? song;
 
-  @override
-  State<BuildSheet> createState() => _BuildSheetState();
-}
-
-class _BuildSheetState extends State<BuildSheet> {
+ 
   List playlists = [];
 
   String? playlistName = '';
@@ -45,6 +40,7 @@ class _BuildSheetState extends State<BuildSheet> {
                         color: Color.fromARGB(255, 102, 197, 105)),
                   ),
                   content: TextField(
+                    //decoration: const InputDecoration(enabled:true,border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(5)))),
                     onChanged: (value) {
                       playlistName = value;
                     },
@@ -65,13 +61,10 @@ class _BuildSheetState extends State<BuildSheet> {
 
                           if (playlistName != '' && excistingName.isEmpty) {
                             box.put(playlistName, librayry);
-                            Navigator.of(context).pop();
-                            setState(() {
-                              playlists = box.keys.toList();
-                            });
+                            Get.back();
+                            playlists = box.keys.toList();
                           } else {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBars().excistingPlaylist);
+                            Get.snackbar("Message", "Excisting playlist name");
                           }
                         },
                         child: const Text(
@@ -87,7 +80,7 @@ class _BuildSheetState extends State<BuildSheet> {
                 height: 50,
                 width: 50,
                 decoration: const BoxDecoration(
-                  color: Color.fromARGB(103, 0, 0, 0),
+                  color: Color.fromARGB(248, 7, 7, 7),
                   borderRadius: BorderRadius.all(Radius.circular(17)),
                 ),
                 child: const Center(
@@ -116,26 +109,24 @@ class _BuildSheetState extends State<BuildSheet> {
                         existingSongs = playlistSongs!
                             .where((element) =>
                                 element.id.toString() ==
-                                widget.song!.metas.id.toString())
+                                song!.metas.id.toString())
                             .toList();
 
                         if (existingSongs.isEmpty) {
                           final songs = box.get("musics") as List<Songsdb>;
                           final temp = songs.firstWhere((element) =>
                               element.id.toString() ==
-                              widget.song!.metas.id.toString());
+                              song!.metas.id.toString());
                           playlistSongs?.add(temp);
 
                           await box.put(e, playlistSongs!);
 
                           // setState(() {});
-                          Navigator.of(context).pop();
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBars().songAdded);
+                          Get.back();
+                          Get.snackbar("Message", "Song added to Playlist");
                         } else {
-                          Navigator.of(context).pop();
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBars().excistingSong);
+                          Get.back();
+                          Get.snackbar("Message", "Song already exists");
                         }
                       },
                       leading: Container(

@@ -1,10 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'package:music_player_go/screens/splash_screen.dart';
-
-
 import 'db/box.dart';
 import 'db/songmodel.dart';
 
@@ -33,9 +31,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       theme: ThemeData(backgroundColor: const Color.fromARGB(255, 253, 251, 251)),
-      home: const SplashScreen(),
+      home: SplashScreen(),
       darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
     );

@@ -1,69 +1,28 @@
+import 'dart:ui';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:music_player_go/cls/cls.dart';
-import 'package:music_player_go/db/box.dart';
-import 'package:music_player_go/widgets/now_playing.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:music_player_go/controller/libraryscreencontroller.dart';
+import 'package:music_player_go/openassetaudio/openassetaudio.dart';
+
 import 'package:on_audio_query/on_audio_query.dart';
-import '../db/songmodel.dart';
+
+import '../widgets/now_playing.dart';
 
 // ignore: must_be_immutable
-class SearchScreen extends StatefulWidget {
-  List<Audio> fullSongs = [];
-
+class SearchScreen extends StatelessWidget {
+  List<Audio> fullSongs;
   SearchScreen({Key? key, required this.fullSongs}) : super(key: key);
 
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
-
-class _SearchScreenState extends State<SearchScreen> {
-  final box = Boxes.getInstance();
-
-  String search = "";
-
-  List<Songsdb> dbSongs = [];
-
-  List<Audio> allSongs = [];
-
-  searchSongs() {
-    dbSongs = box.get("musics") as List<Songsdb>;
-    dbSongs.forEach(
-      (element) {
-        allSongs.add(
-          Audio.file(
-            element.image.toString(),
-            metas: Metas(
-                title: element.title,
-                id: element.id.toString(),
-                artist: element.artist),
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    searchSongs();
-  }
+  String searchText = "";
+  List<Audio> dummy = [];
+  final controller = Get.put(LibraryController());
 
   @override
   Widget build(BuildContext context) {
-    List<Audio> searchArtist = allSongs.where((element) {
-      return element.metas.artist!.toLowerCase().startsWith(
-            search.toLowerCase(),
-          );
-    }).toList();
-    List<Audio> searchTitle = allSongs.where((element) {
-      return element.metas.title!.toLowerCase().startsWith(
-            search.toLowerCase(),
-          );
-    }).toList();
-    List<Audio> searchResult = searchTitle + searchArtist;
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      extendBody: true,
       body: SafeArea(
         child: Container(
           height: 950,
@@ -78,164 +37,100 @@ class _SearchScreenState extends State<SearchScreen> {
               end: Alignment.bottomCenter,
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 10.0,
-                  ),
-                  child: Row(
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          'Search',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.03,
-                ),
-                Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width * 0.85,
-                  decoration: BoxDecoration(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+                child: Text(
+                  "Search",
+                  style: GoogleFonts.montserrat(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0)),
-                  child: TextField(
-                    cursorColor: Colors.grey,
-                    enableSuggestions: true,
-                    style: const TextStyle(color: Colors.black, fontSize: 20),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(color: Colors.grey),
-                      ),
-                      hintText: ' Search a song',
-                      filled: true,
-                    ),
-                    onChanged: (value) {
-                      setState(
-                        () {
-                          search = value;
-                        },
-                      );
-                    },
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 25.0, right: 25, top: 20, bottom: 20),
+                child: TextField(
+                  style: GoogleFonts.montserrat(color: Colors.black),
+                  onChanged: (value) {
+                    Future.delayed(
+                        const Duration(
+                          seconds: 0,
+                        ), () {
+                      searchText = value;
+                      controller.update(["result"]);
+                    });
+                  },
+                  decoration:  InputDecoration(
+                    //hintStyle: const TextStyle(color: Colors.grey),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15)),borderSide: BorderSide(color: Colors.black)),
+                    hintText: "Search",
+                    hintStyle: GoogleFonts.montserrat(color: Colors.grey,fontSize: 18),
+                    
                   ),
+                  
                 ),
-                const SizedBox(
-                  height: 30.0,
-                ),
-                search.isNotEmpty
-                    ? searchResult.isNotEmpty
-                        ? Expanded(
-                            child: Stack(
-                              children: [
-                                ListView.builder(
-                                  itemCount: searchResult.length,
-                                  itemBuilder: ((context, index) {
-                                    return FutureBuilder(
-                                      future: Future.delayed(
-                                        const Duration(microseconds: 0),
-                                      ),
-                                      builder: ((context, snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              OpenPlayer(
-                                                      fullSongs: searchResult,
-                                                      index: index)
-                                                  .openAssetPlayer(
-                                                      index: index,
-                                                      songs: searchResult);
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return NowPlaying(
-                                                    allsong: allSongs,
-                                                    index: index);
-                                              }));
-                                            },
-                                            child: ListTile(
-                                              leading: SizedBox(
-                                                height: 50,
-                                                width: 50,
-                                                child: QueryArtworkWidget(
-                                                  id: int.parse(
-                                                      searchResult[index]
-                                                          .metas
-                                                          .id!),
-                                                  type: ArtworkType.AUDIO,
-                                                  artworkBorder:
-                                                      BorderRadius.circular(15),
-                                                  artworkFit: BoxFit.cover,
-                                                  nullArtworkWidget: Container(
-                                                    height: 50,
-                                                    width: 50,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                        Radius.circular(15),
-                                                      ),
-                                                      image: DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/images/logo.png'),
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              title: Text(
-                                                searchResult[index]
-                                                    .metas
-                                                    .title!,
-                                                maxLines: 1,
-                                                style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white),
-                                              ),
-                                              subtitle: Text(
-                                                searchResult[index]
-                                                    .metas
-                                                    .artist!,
-                                                maxLines: 1,
-                                                style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                        return Container();
-                                      }),
-                                    );
-                                  }),
+              ),
+              Expanded(
+                child: GetBuilder<LibraryController>(
+                    id: "result",
+                    builder: (controller) {
+                      List<Audio> result = searchText == ""
+                          ? dummy.toList()
+                          : fullSongs
+                              .where((element) => element.metas.title!
+                                  .toLowerCase()
+                                  .contains(searchText.toLowerCase()))
+                              .toList();
+                      return ListView.separated(
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: QueryArtworkWidget(
+                                nullArtworkWidget: Image.asset(
+                                  "assets/images/logo1.png",
+                                  height: 50,
+                                  width: 50,
+                                  fit: BoxFit.cover,
                                 ),
-                              ],
-                            ),
-                          )
-                        : const Padding(
-                            padding: EdgeInsets.all(30),
-                            child: Text(
-                              "No Result Found",
-                            ),
-                          )
-                    : const SizedBox(),
-              ],
-            ),
+                                type: ArtworkType.AUDIO,
+                                id: int.parse(
+                                    result[index].metas.id.toString()),
+                              ),
+                              title: Text(
+                                result[index].metas.title.toString(),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style:
+                                    GoogleFonts.montserrat(color: Colors.white),
+                              ),
+                              subtitle: Text(
+                                result[index].metas.artist.toString(),
+                                style:
+                                    GoogleFonts.montserrat(color: Colors.white),
+                              ),
+                              onTap: () {
+                                OpenAssetAudio(allsong: result, index: index)
+                                    .openAsset(index: index, audios: result);
+                                Get.to(
+                                  () =>
+                                      NowPlaying(allsong: result, index: index),
+                                );
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) => const SizedBox(
+                                height: 0.1,
+                              ),
+                          itemCount: result.length);
+                    }),
+              )
+            ],
           ),
         ),
       ),

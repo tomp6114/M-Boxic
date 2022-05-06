@@ -2,12 +2,14 @@ import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_player_go/db/box.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import '../controller/now_playing_screen.dart.dart';
 import '../db/songmodel.dart';
 
 // ignore: must_be_immutable
-class NowPlaying extends StatefulWidget {
+class NowPlaying extends StatelessWidget {
   List<Audio> allsong = [];
 
   int index;
@@ -17,11 +19,7 @@ class NowPlaying extends StatefulWidget {
     required this.index,
   }) : super(key: key);
 
-  @override
-  State<NowPlaying> createState() => _NowPlayingState();
-}
-
-class _NowPlayingState extends State<NowPlaying> {
+ 
   final AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer.withId("0");
   Songsdb? music;
   final List<StreamSubscription> subscription = [];
@@ -30,29 +28,23 @@ class _NowPlayingState extends State<NowPlaying> {
   List<dynamic>? likedSongs = [];
   List<dynamic>? favorites = [];
 
-  @override
-  void initState() {
-    super.initState();
-    dbSongs = box.get("musics") as List<Songsdb>;
-  }
+ 
 
   Audio find(List<Audio> source, String fromPath) {
     return source.firstWhere((element) => element.path == fromPath);
   }
 
-  bool isPlaying = false;
-  bool isLooping = false;
-  bool isShuffle = false;
-
   @override
   Widget build(BuildContext context) {
+    Get.put(NowPlayingController());
+    dbSongs = box.get("musics") as List<Songsdb>;
     //double myHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Get.back();
           },
           icon: const Icon(Icons.arrow_drop_down),
         ),
@@ -68,7 +60,7 @@ class _NowPlayingState extends State<NowPlaying> {
         ),
       ),
       body: Container(
-        height: double.infinity,
+        height: MediaQuery.of(context).size.height, //-//100,
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(colors: [
@@ -81,7 +73,7 @@ class _NowPlayingState extends State<NowPlaying> {
             assetsAudioPlayer.builderCurrent(
               builder: (context, Playing? playing) {
                 final myaudio =
-                    find(widget.allsong, playing!.audio.assetAudioPath);
+                    find(allsong, playing!.audio.assetAudioPath);
                 final currentSong = dbSongs.firstWhere((element) =>
                     element.id.toString() == myaudio.metas.id.toString());
                 likedSongs = box.get("favorites");
@@ -140,76 +132,76 @@ class _NowPlayingState extends State<NowPlaying> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            !isShuffle
-                                ? IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isShuffle = true;
-                                        assetsAudioPlayer.toggleShuffle();
-                                      });
-                                    },
-                                    icon: const Icon(Icons.shuffle),
-                                  )
-                                : IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isShuffle = false;
-                                        assetsAudioPlayer
-                                            .setLoopMode(LoopMode.playlist);
-                                      });
-                                    },
-                                    icon: const Icon(Icons.loop_sharp),
-                                  ),
-                            likedSongs!
-                                    .where((element) =>
-                                        element.id.toString() ==
-                                        currentSong.id.toString())
-                                    .isEmpty
-                                ? IconButton(
-                                    onPressed: () async {
-                                      likedSongs?.add(currentSong);
-                                      box.put("favorites", likedSongs!);
-                                      likedSongs = box.get("favorites");
-                                      setState(() {});
-                                    },
-                                    icon: const Icon(Icons.favorite_border),
-                                  )
-                                : IconButton(
-                                    onPressed: () async {
-                                      setState(() {
-                                        likedSongs?.removeWhere((elemet) =>
-                                            elemet.id.toString() ==
-                                            currentSong.id.toString());
-                                        box.put("favorites", likedSongs!);
-                                      });
-                                    },
-                                    icon: const Icon(Icons.favorite),
-                                  ),
-                            !isLooping
-                                ? IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isLooping = true;
-                                        assetsAudioPlayer
-                                            .setLoopMode(LoopMode.single);
-                                      });
-                                    },
-                                    icon: const Icon(Icons.repeat),
-                                  )
-                                : IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isLooping = false;
-                                        assetsAudioPlayer
-                                            .setLoopMode(LoopMode.playlist);
-                                      });
-                                    },
-                                    icon: const Icon(Icons.repeat_one),
-                                  ),
-                          ],
+                        GetBuilder<NowPlayingController>(
+                          builder: (controller) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                !controller.isShuffle
+                                    ? IconButton(
+                                        onPressed: () {
+                                          controller.isShuffle = true;
+                                          assetsAudioPlayer.toggleShuffle();
+                                          controller.update();
+                                        },
+                                        icon: const Icon(Icons.shuffle),
+                                      )
+                                    : IconButton(
+                                        onPressed: () {
+                                          controller.isShuffle = false;
+                                          assetsAudioPlayer
+                                              .setLoopMode(LoopMode.playlist);
+                                             controller.update(); 
+                                        },
+                                        icon: const Icon(Icons.loop_sharp),
+                                      ),
+                                likedSongs!
+                                        .where((element) =>
+                                            element.id.toString() ==
+                                            currentSong.id.toString())
+                                        .isEmpty
+                                    ? IconButton(
+                                        onPressed: () async {
+                                          likedSongs?.add(currentSong);
+                                          box.put("favorites", likedSongs!);
+                                          likedSongs = box.get("favorites");
+                                          //setState(() {});
+                                          controller.update();
+                                        },
+                                        icon: const Icon(Icons.favorite_border),
+                                      )
+                                    : IconButton(
+                                        onPressed: () async {
+                                          likedSongs?.removeWhere((elemet) =>
+                                              elemet.id.toString() ==
+                                              currentSong.id.toString());
+                                          box.put("favorites", likedSongs!);
+                                          controller.update();
+                                        },
+                                        icon: const Icon(Icons.favorite),
+                                      ),
+                                !controller.isLooping
+                                    ? IconButton(
+                                        onPressed: () {
+                                          controller.isLooping = true;
+                                          assetsAudioPlayer
+                                              .setLoopMode(LoopMode.single);
+                                          controller.update();
+                                        },
+                                        icon: const Icon(Icons.repeat),
+                                      )
+                                    : IconButton(
+                                        onPressed: () {
+                                          controller.isLooping = false;
+                                          assetsAudioPlayer
+                                              .setLoopMode(LoopMode.playlist);
+                                          controller.update();
+                                        },
+                                        icon: const Icon(Icons.repeat_one),
+                                      ),
+                              ],
+                            );
+                          },
                         ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,

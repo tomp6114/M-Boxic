@@ -9,27 +9,17 @@ import '../db/box.dart';
 import '../openassetaudio/openassetaudio.dart';
 
 // ignore: must_be_immutable
-class PlaylistScreen extends StatefulWidget {
-  String? playlistName;
+class PlaylistScreen extends StatelessWidget {
+  String playlistName;
 
-  PlaylistScreen({Key? key, this.playlistName}) : super(key: key);
+  PlaylistScreen({Key? key, required this.playlistName}) : super(key: key);
 
-  @override
-  _PlaylistScreenState createState() => _PlaylistScreenState();
-}
-
-class _PlaylistScreenState extends State<PlaylistScreen> {
   List<Songsdb>? dbSongs = [];
 
   List<Songsdb>? playlistSongs = [];
   List<Audio> playPlaylist = [];
 
   final box = Boxes.getInstance();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +30,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         elevation: 0,
         backgroundColor: const Color.fromARGB(255, 24, 3, 18),
         title: Text(
-          widget.playlistName!,
+          playlistName,
           style: const TextStyle(fontSize: 25),
         ),
         leading: IconButton(
@@ -62,7 +52,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                 context: context,
                 builder: (context) {
                   return buildSheet(
-                    playlistName: widget.playlistName!,
+                    playlistName: playlistName,
                   );
                 },
               );
@@ -87,7 +77,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
               child: ValueListenableBuilder(
                 valueListenable: box.listenable(),
                 builder: (context, boxes, _) {
-                  final playlistSongs = box.get(widget.playlistName)!;
+                  final playlistSongs = box.get(playlistName)!;
                   return playlistSongs.isEmpty
                       ? const SizedBox(
                           child: Center(
@@ -173,13 +163,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 ),
                                 trailing: IconButton(
                                   onPressed: () {
-                                    setState(
-                                      () {
-                                        playlistSongs.removeAt(index);
-                                        box.put(
-                                            widget.playlistName, playlistSongs);
-                                      },
-                                    );
+                                    playlistSongs.removeAt(index);
+                                    box.put(playlistName, playlistSongs);
                                   },
                                   icon: const Icon(Icons.delete,
                                       color: Colors.white),
