@@ -52,7 +52,7 @@ android {
         applicationId "in.brototype.music_player_go"
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
+        versionCode 2
         versionName flutterVersionName
         multiDexEnabled true
     }

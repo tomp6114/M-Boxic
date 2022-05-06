@@ -201,9 +201,7 @@ class HomeScreen extends StatelessWidget {
                                           favorites?.add(temp);
                                           box.put("favorites", favorites!);
                                           Get.back();
-                                          // ScaffoldMessenger.of(context)
-                                          //     .showSnackBar(
-                                          //         SnackBars().likedAdd);
+                                          
                                           Get.snackbar(
                                             "Message",
                                             "Song added to Favorites",

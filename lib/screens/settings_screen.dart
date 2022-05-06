@@ -173,7 +173,7 @@ class SettingsScreen extends StatelessWidget {
           content: Padding(
             padding: const EdgeInsets.only(bottom: 10, top: 10.0),
             child: Text(
-                'Hi This is my music app M Boxic \n Version 1.0.1',style: GoogleFonts.montserrat(),),
+                'Hi This is my music app M Boxic \n Version 2.0.0',style: GoogleFonts.montserrat(),),
           ),
         );
       },
