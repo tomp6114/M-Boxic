@@ -3,9 +3,11 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:marquee/marquee.dart';
 import 'package:music_player_go/db/box.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../controller/now_playing_screen.dart.dart';
+import '../controller/controller.dart';
 import '../db/songmodel.dart';
 
 // ignore: must_be_immutable
@@ -19,16 +21,14 @@ class NowPlaying extends StatelessWidget {
     required this.index,
   }) : super(key: key);
 
- 
   final AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer.withId("0");
   Songsdb? music;
   final List<StreamSubscription> subscription = [];
-  final box = Boxes.getInstance();
+  final Controller _controller = Get.find();
+  //final box = Boxes.getInstance();
   List<Songsdb> dbSongs = [];
-  List<dynamic>? likedSongs = [];
-  List<dynamic>? favorites = [];
 
- 
+  List<dynamic>? favorites = [];
 
   Audio find(List<Audio> source, String fromPath) {
     return source.firstWhere((element) => element.path == fromPath);
@@ -36,8 +36,8 @@ class NowPlaying extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(NowPlayingController());
-    dbSongs = box.get("musics") as List<Songsdb>;
+    //Get.put(Controller());
+    dbSongs =_controller.dbSongs;
     //double myHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -68,15 +68,14 @@ class NowPlaying extends StatelessWidget {
             Color.fromRGBO(21, 154, 211, 1)
           ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
         ),
-        child: Column(
+        child: ListView(
           children: [
             assetsAudioPlayer.builderCurrent(
               builder: (context, Playing? playing) {
-                final myaudio =
-                    find(allsong, playing!.audio.assetAudioPath);
+                final myaudio = find(allsong, playing!.audio.assetAudioPath);
                 final currentSong = dbSongs.firstWhere((element) =>
                     element.id.toString() == myaudio.metas.id.toString());
-                likedSongs = box.get("favorites");
+                // likedSongs = box.get("favorites");
                 String artist;
                 if (myaudio.metas.artist.toString() == "<unknown>") {
                   artist = 'No artist';
@@ -115,12 +114,27 @@ class NowPlaying extends StatelessWidget {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
-                        Text(
-                          "${myaudio.metas.title}",
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold),
+                        SizedBox(
+                          height: 30,
+                          width: 400,
+                          child: Marquee(
+                            text: "${myaudio.metas.title}",
+                            style: GoogleFonts.montserrat(
+                                color: Colors.white,
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold),
+                            scrollAxis: Axis.horizontal,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            blankSpace: 20.0,
+                            velocity: 100.0,
+                            pauseAfterRound: const Duration(seconds: 80),
+                            startPadding: 10.0,
+                            accelerationDuration: const Duration(seconds: 1),
+                            accelerationCurve: Curves.linear,
+                            // ignore: prefer_const_constructors
+                            decelerationDuration: Duration(milliseconds: 500),
+                            decelerationCurve: Curves.easeOut,
+                          ),
                         ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.05,
@@ -132,7 +146,7 @@ class NowPlaying extends StatelessWidget {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
-                        GetBuilder<NowPlayingController>(
+                        GetBuilder<Controller>(
                           builder: (controller) {
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -151,31 +165,28 @@ class NowPlaying extends StatelessWidget {
                                           controller.isShuffle = false;
                                           assetsAudioPlayer
                                               .setLoopMode(LoopMode.playlist);
-                                             controller.update(); 
+                                          controller.update();
                                         },
                                         icon: const Icon(Icons.loop_sharp),
                                       ),
-                                likedSongs!
+                                controller.likedSongs!
                                         .where((element) =>
                                             element.id.toString() ==
                                             currentSong.id.toString())
                                         .isEmpty
                                     ? IconButton(
                                         onPressed: () async {
-                                          likedSongs?.add(currentSong);
-                                          box.put("favorites", likedSongs!);
-                                          likedSongs = box.get("favorites");
-                                          //setState(() {});
+                                          controller
+                                              .addToFavorites(currentSong);
                                           controller.update();
                                         },
                                         icon: const Icon(Icons.favorite_border),
                                       )
                                     : IconButton(
                                         onPressed: () async {
-                                          likedSongs?.removeWhere((elemet) =>
-                                              elemet.id.toString() ==
-                                              currentSong.id.toString());
-                                          box.put("favorites", likedSongs!);
+                                          removeFromFav(
+                                              controller, currentSong);
+                                          controller.addToFav();
                                           controller.update();
                                         },
                                         icon: const Icon(Icons.favorite),
@@ -273,6 +284,11 @@ class NowPlaying extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void removeFromFav(Controller controller, Songsdb currentSong) {
+    return controller.likedSongs?.removeWhere(
+        (element) => element.id.toString() == currentSong.id.toString());
   }
 
   Widget seekBarWidget(BuildContext ctx) {

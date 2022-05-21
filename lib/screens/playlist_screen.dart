@@ -17,9 +17,10 @@ class PlaylistScreen extends StatelessWidget {
   List<Songsdb>? dbSongs = [];
 
   List<Songsdb>? playlistSongs = [];
+  final box = Boxes.getInstance();
   List<Audio> playPlaylist = [];
 
-  final box = Boxes.getInstance();
+  
 
   @override
   Widget build(BuildContext context) {

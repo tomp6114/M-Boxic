@@ -7,6 +7,7 @@ import 'package:music_player_go/screens/home_screen.dart';
 import 'package:music_player_go/screens/library_screen.dart';
 import 'package:music_player_go/screens/search_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import '../controller/controller.dart';
 import '../widgets/now_playing.dart';
 
 // ignore: must_be_immutable
@@ -20,7 +21,7 @@ class BottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(BottomNavigationController());
+    Get.put(Controller());
     final pages = [
       HomeScreen(
         allsong: allsong,
@@ -47,13 +48,13 @@ class BottomNavigation extends StatelessWidget {
         color: Color.fromARGB(235, 217, 221, 223),
       ),
     ];
-    return GetBuilder<BottomNavigationController>(
+    return GetBuilder<Controller>(
       builder: ((controller) {
         return Scaffold(
           extendBodyBehindAppBar: true,
           extendBody: true,
           body: pages[controller.selectedIndex],
-          bottomNavigationBar: CurvedNavigationBar(
+          bottomNavigationBar: CurvedNavigationBar( 
             color: const Color.fromARGB(244, 7, 0, 0),
             backgroundColor: const Color.fromARGB(255, 30, 151, 211),
             items: items,

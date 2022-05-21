@@ -15,7 +15,7 @@ Future main() async {
    
   final box = Boxes.getInstance();
 
- //add for playlist working
+ //add for playlist 
   List<dynamic> libraryKeys = box.keys.toList();
   if (!libraryKeys.contains("favorites")) {
     List<dynamic> likedSongs = [];
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(backgroundColor: const Color.fromARGB(255, 253, 251, 251)),
-      home: SplashScreen(),
+      home: const SplashScreen(),
       darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
     );

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +7,7 @@ import 'package:music_player_go/openassetaudio/openassetaudio.dart';
 
 import 'package:on_audio_query/on_audio_query.dart';
 
+import '../controller/controller.dart';
 import '../widgets/now_playing.dart';
 
 // ignore: must_be_immutable
@@ -18,7 +17,7 @@ class SearchScreen extends StatelessWidget {
 
   String searchText = "";
   List<Audio> dummy = [];
-  final controller = Get.put(LibraryController());
+  final Controller controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -65,20 +64,21 @@ class SearchScreen extends StatelessWidget {
                       controller.update(["result"]);
                     });
                   },
-                  decoration:  InputDecoration(
+                  decoration: InputDecoration(
                     //hintStyle: const TextStyle(color: Colors.grey),
                     filled: true,
                     fillColor: Colors.white,
-                    border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15)),borderSide: BorderSide(color: Colors.black)),
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        borderSide: BorderSide(color: Colors.black)),
                     hintText: "Search",
-                    hintStyle: GoogleFonts.montserrat(color: Colors.grey,fontSize: 18),
-                    
+                    hintStyle: GoogleFonts.montserrat(
+                        color: Colors.grey, fontSize: 18),
                   ),
-                  
                 ),
               ),
               Expanded(
-                child: GetBuilder<LibraryController>(
+                child: GetBuilder<Controller>(
                     id: "result",
                     builder: (controller) {
                       List<Audio> result = searchText == ""

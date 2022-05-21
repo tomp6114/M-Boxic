@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../controller/controller.dart';
 import '../controller/settings_controller.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class SettingsScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    Get.put(SettingsController());
+    Get.put(Controller());
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -138,7 +139,7 @@ class SettingsScreen extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
-                    GetBuilder<SettingsController>(builder: (controller){
+                    GetBuilder<Controller>(builder: (controller){
                       return controller.buildSwitch();
                     })
                   ],

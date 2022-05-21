@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controller/controller.dart';
 import '../db/box.dart';
 
 // ignore: must_be_immutable
 class EditPlaylist extends StatelessWidget {
   EditPlaylist({Key? key, required this.playlistName}) : super(key: key);
   final String playlistName;
-  final _box = Boxes.getInstance();
+  //final _box = Boxes.getInstance();
   String? _title;
   final formkey = GlobalKey<FormState>();
+  final Controller _controller = Get.find();
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -58,14 +60,7 @@ class EditPlaylist extends StatelessWidget {
                   _title = value;
                 },
                 validator: (value) {
-                  List keys = _box.keys.toList();
-                  if (value == "") {
-                    return "Name Required";
-                  }
-                  if (keys.where((element) => element == value).isNotEmpty) {
-                    return "This name already exits";
-                  }
-                  return null;
+                  return _controller.editPlaylistName(value);
                 },
               ),
             ),
@@ -81,7 +76,7 @@ class EditPlaylist extends StatelessWidget {
                   ),
                   child: TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: const Center(
                       child: Text(
@@ -104,12 +99,7 @@ class EditPlaylist extends StatelessWidget {
                   ),
                   child: TextButton(
                     onPressed: () {
-                      if (formkey.currentState!.validate()) {
-                        List? playlists = _box.get(playlistName);
-                        _box.put(_title, playlists!);
-                        _box.delete(playlistName);
-                        Get.back();
-                      }
+                      _controller.deletePlaylist(formkey,_title!,playlistName);
                     },
                     child: const Center(
                       child: Text(
@@ -129,4 +119,8 @@ class EditPlaylist extends StatelessWidget {
       ),
     );
   }
+
+  
+
+  
 }

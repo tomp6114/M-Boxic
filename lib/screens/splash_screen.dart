@@ -1,19 +1,17 @@
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:music_player_go/controller/splash_screen_controller.dart';
+import '../controller/controller.dart';
 
 
 // ignore: must_be_immutable
 class SplashScreen extends StatelessWidget {
-  SplashScreen({Key? key}) : super(key: key);
+ const SplashScreen({Key? key}) : super(key: key);
 
-  List<Audio> audiosongs = [];
 
   @override
   Widget build(BuildContext context) {
-    Get.put(SplashScreenController());
+    Get.put(Controller());
     return Scaffold(
       body: SafeArea(
         child: Container(
